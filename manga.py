@@ -550,7 +550,7 @@ class StandaloneSimpleLama:
     وزن مستقیماً از ریلیزِ گیت‌هابِ Sanster/models دانلود و در کشِ torch ذخیره می‌شود.
     """
 
-    MODEL_URL = "https://github.com/Sanster/models/releases/download/add_big_lama/big-lama.pt"
+    MODEL_URL = "https://huggingface.co/iimate/big-lama-pt/resolve/main/big-lama.pt"
 
     def __init__(self, device: Optional[str] = None):
         if torch is None:
