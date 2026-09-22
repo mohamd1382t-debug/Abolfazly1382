@@ -582,7 +582,7 @@ class StandaloneSimpleLama:
     وزن مستقیماً از ریلیزِ گیت‌هابِ Sanster/models دانلود و در کشِ torch ذخیره می‌شود.
     """
 
-    MODEL_URL = "https://github.com/Sanster/models/releases/download/AnimeMangaInpainting/anime-manga-big-lama.pt?"
+    MODEL_URL = "https://github.com/enesmsahin/simple-lama-inpainting/releases/download/v0.1.0/big-lama.pt"
 
     def __init__(self, device: Optional[str] = None):
         if torch is None:
