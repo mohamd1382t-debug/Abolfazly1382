@@ -435,7 +435,7 @@ try:
     )
 except ImportError:
     _lama_expand_mask_boxes = None
-    _LAMA_MASK_EXPAND_RATIO = 0.15
+    _LAMA_MASK_EXPAND_RATIO = 0.16
 
 
 def _ort_providers(prefer_gpu: bool = True):
