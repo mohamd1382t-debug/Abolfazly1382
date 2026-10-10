@@ -434,8 +434,36 @@ try:
         MASK_EXPAND_RATIO as _LAMA_MASK_EXPAND_RATIO,
     )
 except ImportError:
-    _lama_expand_mask_boxes = None
     _LAMA_MASK_EXPAND_RATIO = 0.18
+
+    def _lama_expand_mask_boxes(mask, ratio=0.18):
+        mask_np = np.array(mask.convert("L"))
+        binary = (mask_np > 0).astype(np.uint8)
+
+        count, labels, stats, centroids = cv2.connectedComponentsWithStats(
+            binary, connectivity=8
+        )
+
+        heights = [
+            stats[i, cv2.CC_STAT_HEIGHT]
+            for i in range(1, count)
+            if stats[i, cv2.CC_STAT_AREA] >= 3
+        ]
+
+        if not heights:
+            return mask
+
+        text_height = int(np.median(heights))
+        expand = max(1, round(text_height * ratio))
+
+        kernel_size = expand * 2 + 1
+        kernel = cv2.getStructuringElement(
+            cv2.MORPH_ELLIPSE,
+            (kernel_size, kernel_size)
+        )
+
+        expanded = cv2.dilate(binary, kernel, iterations=1)
+        return Image.fromarray(expanded * 255, mode="L")
 
 
 def _ort_providers(prefer_gpu: bool = True):
