@@ -4954,7 +4954,7 @@ tone باید کوتاه و توصیفی باشه؛ مثل:
         if h_line <= 2:
             return 48
         
-        return int(np.clip(round(h_line * 1.2), 12, 48))
+        return int(np.clip(round(h_line * 1.2), 12, 60))
 
     def _wrap_and_fit(
         self, draw: ImageDraw.ImageDraw, text: str, max_w: int, max_h: int,
