@@ -3537,8 +3537,11 @@ class MangaTranslator:
             pass
 
         
-        cleaned, remaining = self._flat_fill_uniform_components(image, mask)
+       cleaned, remaining = self._flat_fill_uniform_components(image, mask)
+        cv2.imwrite("debug_mask.png", mask)
+        cv2.imwrite("debug_remaining.png", remaining)
 
+       
         if not np.any(remaining):
             print("  - همه‌ی نواحی با پرکردنِ رنگِ یک‌دست پاک شدند.")
             return cleaned
