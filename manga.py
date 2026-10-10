@@ -3416,7 +3416,7 @@ class MangaTranslator:
             text_mask = cv2.bitwise_or(text_mask, promo_sfx_dilated)
 
         
-        pad = max(0, int(getattr(self, "mask_padding", 3) or 3))
+        pad = max(0, int(getattr(self, "mask_padding", 4) or 4))
         if pad > 0:
             k = 2 * pad + 1
             pad_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
