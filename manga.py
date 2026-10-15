@@ -3471,7 +3471,7 @@ red1 = cv2.inRange(
 
 colored_halo = cv2.bitwise_or(colored_halo, red1)
 
-        near = cv2.dilate(mask, np.ones((9, 9), np.uint8), iterations=1)
+       near = cv2.dilate(mask, np.ones((9, 9), np.uint8), iterations=1)
         purple_near_text = cv2.bitwise_and(colored_halo, near)
         if np.any(purple_near_text):
             mask = cv2.bitwise_or(mask, purple_near_text)
