@@ -3456,7 +3456,7 @@ class MangaTranslator:
             return mask
 
 @staticmethod
-    def _add_purple_halo_to_mask(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
+def _add_purple_halo_to_mask(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
         lower_color = np.array([90, 35, 35], dtype=np.uint8)
