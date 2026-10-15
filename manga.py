@@ -3482,7 +3482,7 @@ class MangaTranslator:
 
         bin_mask = (mask > 0).astype(np.uint8)
         n, labels, stats, _ = cv2.connectedComponentsWithStats(bin_mask, connectivity=8)
-        ring_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (31,31))
+        ring_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (21,21))
 
         for i in range(1, n):
             comp = (labels == i)
