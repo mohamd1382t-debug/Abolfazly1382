@@ -3479,8 +3479,8 @@ def _add_purple_halo_to_mask(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
 
         return mask
 
- @staticmethod
- def _flat_fill_uniform_components(
+@staticmethod
+def _flat_fill_uniform_components(
         image: np.ndarray, mask: np.ndarray, std_thresh: float = 13.0, min_ring_px: int = 40
     ) -> Tuple[np.ndarray, np.ndarray]:
         
