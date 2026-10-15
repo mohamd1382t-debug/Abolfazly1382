@@ -3459,15 +3459,23 @@ class MangaTranslator:
     def _add_purple_halo_to_mask(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
         
         hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        lower_purple = np.array([125, 40, 40], dtype=np.uint8)
-        upper_purple = np.array([160, 255, 255], dtype=np.uint8)
-        purple = cv2.inRange(hsv, lower_purple, upper_purple)
+        lower_color = np.array([90, 35, 35], dtype=np.uint8)
+        upper_color = np.array([179, 255, 255], dtype=np.uint8)
+        colored_halo = cv2.inRange(hsv, lower_color, upper_color)
+
+        red1 = cv2.inRange(
+            hsv,
+            np.array([0, 35, 35], dtype=np.uint8),
+            np.array([10, 255, 255], dtype=np.uint8)
+        )
+        colored_halo = cv2.bitwise_or(colored_halo, red1)
 
         near = cv2.dilate(mask, np.ones((9, 9), np.uint8), iterations=1)
-        purple_near_text = cv2.bitwise_and(purple, near)
+        colored_near_text = cv2.bitwise_and(colored_halo, near)
 
-        if np.any(purple_near_text):
-            mask = cv2.bitwise_or(mask, purple_near_text)
+        if np.any(colored_near_text):
+            mask = cv2.bitwise_or(mask, colored_near_text)
+
         return mask
 
     @staticmethod
