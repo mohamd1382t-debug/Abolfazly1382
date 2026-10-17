@@ -3559,6 +3559,7 @@ class MangaTranslator:
     def clean_image(self, image: np.ndarray, regions: List[TextRegion]) -> np.ndarray:
         
         mask = self._build_text_mask(image, regions)
+        print("### TEST MASK PATCH LOADED ###")
         if not np.any(mask):
             return image.copy()
 
