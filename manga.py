@@ -3358,49 +3358,100 @@ class MangaTranslator:
         text_mask = np.zeros((h_img, w_img), dtype=np.uint8)
         promo_sfx_mask = np.zeros((h_img, w_img), dtype=np.uint8)
 
+        hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+        red_mask1 = cv2.inRange(
+            hsv, np.array([0, 65, 45], dtype=np.uint8),
+            np.array([12, 255, 255], dtype=np.uint8)
+        )
+        red_mask2 = cv2.inRange(
+            hsv, np.array([168, 65, 45], dtype=np.uint8),
+            np.array([180, 255, 255], dtype=np.uint8)
+        )
+        red_frame_mask = cv2.bitwise_or(red_mask1, red_mask2)
+
         for region in regions:
-            polys = list(getattr(region, "ocr_polys", None) or []) or list(getattr(region, "boxes", None) or [])
+            polys = (
+                list(getattr(region, "ocr_polys", None) or [])
+                or list(getattr(region, "boxes", None) or [])
+            )
             if not polys:
                 continue
 
             region_mask = np.zeros((h_img, w_img), dtype=np.uint8)
+            points_all = []
+
             for poly in polys:
                 try:
                     pts = np.asarray(poly, dtype=np.int32).reshape(-1, 1, 2)
                 except Exception:
                     continue
+
                 if pts.shape[0] < 3:
                     continue
+
                 cv2.fillPoly(region_mask, [pts], 255)
+                points_all.append(pts.reshape(-1, 2))
 
             if not np.any(region_mask):
                 continue
 
+            style = str(getattr(region, "bubble_style", "") or "").lower()
+            kind = str(getattr(region, "kind", "") or "").lower()
+            is_ornate = style in {
+                "narrator_ornate", "fantasy_title", "ornate_narrator",
+                "decorative_title", "title"
+            } or kind in {"narrator_ornate", "fantasy_title", "title"}
+
+            if is_ornate and points_all:
+                pts = np.concatenate(points_all, axis=0)
+                x0 = max(0, int(np.min(pts[:, 0])))
+                y0 = max(0, int(np.min(pts[:, 1])))
+                x1 = min(w_img, int(np.max(pts[:, 0])) + 1)
+                y1 = min(h_img, int(np.max(pts[:, 1])) + 1)
+
+                if x1 > x0 and y1 > y0:
+                    rw, rh = x1 - x0, y1 - y0
+                    pad_x = max(8, int(rw * 0.12))
+                    pad_y = max(6, int(rh * 0.18))
+
+                    ex0 = max(0, x0 - pad_x)
+                    ey0 = max(0, y0 - pad_y)
+                    ex1 = min(w_img, x1 + pad_x)
+                    ey1 = min(h_img, y1 + pad_y)
+
+                    expanded = np.zeros_like(region_mask)
+                    expanded[ey0:ey1, ex0:ex1] = 255
+
+                    red_roi = red_frame_mask[ey0:ey1, ex0:ex1]
+                    expanded_roi = expanded[ey0:ey1, ex0:ex1]
+                    expanded_roi[red_roi > 0] = 0
+
+                    region_mask = cv2.bitwise_or(region_mask, expanded)
+
             text_mask = cv2.bitwise_or(text_mask, region_mask)
 
-            if getattr(region, "kind", "") in ("promo", "sfx"):
+            if kind in ("promo", "sfx"):
                 promo_sfx_mask = cv2.bitwise_or(promo_sfx_mask, region_mask)
 
         if not np.any(text_mask):
             return text_mask
 
-        
         text_mask = self._refine_text_mask_tight(image, text_mask)
-
-        
         text_mask = self._add_purple_halo_to_mask(image, text_mask)
 
-        
         if np.any(promo_sfx_mask):
             big_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (15, 15))
-            promo_sfx_dilated = cv2.dilate(promo_sfx_mask, big_kernel, iterations=3)
+            promo_sfx_dilated = cv2.dilate(
+                promo_sfx_mask, big_kernel, iterations=3
+            )
             text_mask = cv2.bitwise_or(text_mask, promo_sfx_dilated)
 
-        
         pad = max(0, int(getattr(self, "mask_padding", 3) or 3))
         if pad > 0:
             k = 2 * pad + 1
-            pad_kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
+            pad_kernel = cv2.getStructuringElement(
+                cv2.MORPH_ELLIPSE, (k, k)
+            )
             text_mask = cv2.dilate(text_mask, pad_kernel, iterations=1)
 
         return text_mask
