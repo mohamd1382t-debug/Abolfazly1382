@@ -434,9 +434,9 @@ try:
         MASK_EXPAND_RATIO as _LAMA_MASK_EXPAND_RATIO,
     )
 except ImportError:
-    _LAMA_MASK_EXPAND_RATIO = 0.20
+    _LAMA_MASK_EXPAND_RATIO = 0.16
 
-    def _lama_expand_mask_boxes(mask, ratio=0.20):
+    def _lama_expand_mask_boxes(mask, ratio=0.16):
         mask_np = np.array(mask.convert("L"))
         binary = (mask_np > 0).astype(np.uint8)
 
@@ -3449,8 +3449,7 @@ class MangaTranslator:
 
         if not np.any(text_mask):
             return text_mask
-
-        text_mask = self._refine_text_mask_tight(image, text_mask)
+        
         text_mask = self._add_purple_halo_to_mask(image, text_mask)
 
         if np.any(promo_sfx_mask):
