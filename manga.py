@@ -434,9 +434,9 @@ try:
         MASK_EXPAND_RATIO as _LAMA_MASK_EXPAND_RATIO,
     )
 except ImportError:
-    _LAMA_MASK_EXPAND_RATIO = 0.05
+    _LAMA_MASK_EXPAND_RATIO = 0.10
 
-    def _lama_expand_mask_boxes(mask, ratio=0.05):
+    def _lama_expand_mask_boxes(mask, ratio=0.10):
         mask_np = np.array(mask.convert("L"))
         binary = (mask_np > 0).astype(np.uint8)
 
