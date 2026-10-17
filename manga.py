@@ -429,42 +429,27 @@ except ImportError:
     print("[!] torch در دسترس نیست — پاک‌سازی فقط با OpenCV.", file=sys.stderr)
 
 try:
-       from remove_object import (
+        from remove_object import (
         _expand_mask_boxes as _lama_expand_mask_boxes,
         MASK_EXPAND_RATIO as _LAMA_MASK_EXPAND_RATIO,
     )
 except ImportError:
+    _lama_expand_mask_boxes = None
     _LAMA_MASK_EXPAND_RATIO = 0.16
 
-    def _lama_expand_mask_boxes(mask, ratio=0.16):
-        mask_np = np.array(mask.convert("L"))
-        binary = (mask_np > 0).astype(np.uint8)
 
-        count, labels, stats, centroids = cv2.connectedComponentsWithStats(
-            binary, connectivity=8
-        )
-
-        heights = [
-            stats[i, cv2.CC_STAT_HEIGHT]
-            for i in range(1, count)
-            if stats[i, cv2.CC_STAT_AREA] >= 3
-        ]
-
-        if not heights:
-            return mask
-
-        text_height = int(np.median(heights))
-        expand = max(1, round(text_height * ratio))
-
-        kernel_size = expand * 2 + 1
-        kernel = cv2.getStructuringElement(
-            cv2.MORPH_ELLIPSE,
-            (kernel_size, kernel_size)
-        )
-
-        expanded = cv2.dilate(binary, kernel, iterations=1)
-        return Image.fromarray(expanded * 255, mode="L")
-
+def _ort_providers(prefer_gpu: bool = True):
+    if ort is None:
+        return ["CPUExecutionProvider"]
+    available = set(ort.get_available_providers())
+    order = []
+    if prefer_gpu and "CUDAExecutionProvider" in available:
+        order.append("CUDAExecutionProvider")
+    elif prefer_gpu and "CoreMLExecutionProvider" in available:
+        order.append("CoreMLExecutionProvider")
+    if "CPUExecutionProvider" in available:
+        order.append("CPUExecutionProvider")
+    return order or ["CPUExecutionProvider"]
 
 def _ort_session_options(threads: int = 4):
     so = ort.SessionOptions()
