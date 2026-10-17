@@ -1516,9 +1516,18 @@ class MangaTranslator:
             "narrator": font_path,
             "square_thought": font_path,
             "black": font_path,
-            
             "explosion": font_path,
             "sfx": font_path,
+            "normal_irregular": font_path,
+            "internal_monologue": font_path,
+            "narrator_ornate": font_path,
+            "fantasy_title": font_path,
+            "dark_panel": font_path,
+            "robot": font_path,
+            "telephone": font_path,
+            "singing": font_path,
+            "onomatopoeia": font_path,
+            "double_outline": font_path,
         }
         self.reading_order = reading_order
         self.group_margin = group_margin
@@ -3993,31 +4002,42 @@ tone باید کوتاه و توصیفی باشه؛ مثل:
         }
         applied = 0
         valid_tones = {
-            "normal", "shout", "comedy_shout", "whisper",
-            "sun_thought", "thought", "free_text", "system",
-            "monster", "cry", "fear", "broadcast", "letter",
-            "narrator", "square_thought", "black",
-            
-            "explosion", "sfx",
-        }
+    "normal", "normal_irregular", "shout", "comedy_shout",
+    "whisper", "sun_thought", "thought", "square_thought",
+    "internal_monologue", "free_text", "system", "monster",
+    "cry", "fear", "broadcast", "telephone", "letter",
+    "narrator", "narrator_ornate", "fantasy_title",
+    "dark_panel", "black", "robot", "singing",
+    "onomatopoeia", "explosion", "sfx", "double_outline",
+}
         
         tone_aliases = {
             "angry": "shout", "rage": "shout", "yell": "shout",
-            "comedy": "comedy_shout", "comic": "comedy_shout", "funny_shout": "comedy_shout",
-            "cloud_thought": "thought", "cloud": "thought",
-            "sun": "sun_thought", "solar_thought": "sun_thought",
-            "outside": "free_text", "caption": "free_text", "sfx_free": "free_text",
-            "ui": "system", "status": "system",
-            "roar": "monster", "beast": "monster",
-            "tears": "cry", "sad": "cry",
-            "scared": "fear", "horror": "fear",
-            "radio": "broadcast", "tv": "broadcast", "phone": "broadcast", "wireless": "broadcast",
-            "scroll": "letter", "note": "letter",
-            "narration": "narrator", "box": "narrator",
-            "square": "square_thought",
-            "dark": "black", "dark_bubble": "black",
-            "explosion": "shout", "sfx": "comedy_shout",
-        }
+    "comedy": "comedy_shout", "comic": "comedy_shout", "funny_shout": "comedy_shout",
+    "cloud_thought": "thought", "cloud": "thought",
+    "sun": "sun_thought", "solar_thought": "sun_thought",
+    "outside": "free_text", "caption": "free_text", "sfx_free": "free_text",
+    "ui": "system", "status": "system",
+    "roar": "monster", "beast": "monster",
+    "tears": "cry", "sad": "cry",
+    "scared": "fear", "horror": "fear",
+    "radio": "broadcast", "tv": "broadcast", "phone": "broadcast", "wireless": "broadcast",
+    "scroll": "letter", "note": "letter",
+    "narration": "narrator", "box": "narrator",
+    "square": "square_thought",
+    "dark": "black", "dark_bubble": "black",
+    "explosion": "shout", "sfx": "comedy_shout",
+    "inner_voice": "internal_monologue", "monologue": "internal_monologue",
+    "irregular": "normal_irregular", "wavy": "normal_irregular",
+    "double_border": "double_outline",
+    "ornate_narrator": "narrator_ornate", "decorative_narrator": "narrator_ornate",
+    "title": "fantasy_title", "decorative_title": "fantasy_title",
+    "dark_box": "dark_panel",
+    "robot_voice": "robot", "machine": "robot",
+    "phone_call": "telephone", "intercom": "broadcast",
+    "song": "singing", "lyrics": "singing",
+    "sound_effect": "onomatopoeia", "impact_text": "onomatopoeia",
+}
         for region in regions:
             item = by_id.get(region.id)
             if not item:
@@ -7611,6 +7631,7 @@ def main():
     
     _font_map = (
         ("normal", "font_normal"),
+        ("normal_irregular", "font_normal"),
         ("shout", "font_shout"),
         ("comedy_shout", "font_comedy_shout"),
         ("whisper", "font_whisper"),
@@ -7622,11 +7643,19 @@ def main():
         ("cry", "font_cry"),
         ("fear", "font_fear"),
         ("broadcast", "font_broadcast"),
+        ("telephone", "font_broadcast"),
         ("letter", "font_letter"),
         ("narrator", "font_narrator"),
+        ("narrator_ornate", "font_narrator"),
+        ("fantasy_title", "font_narrator"),
         ("square_thought", "font_square_thought"),
+        ("internal_monologue", "font_thought"),
         ("black", "font_black"),
-        
+        ("dark_panel", "font_black"),
+        ("double_outline", "font_normal"),
+        ("robot", "font_monster"),
+        ("singing", "font_comedy_shout"),
+        ("onomatopoeia", "font_sfx"),
         ("explosion", "font_explosion"),
         ("sfx", "font_sfx"),
     )
