@@ -5098,7 +5098,7 @@ tone باید کوتاه و توصیفی باشه؛ مثل:
             if total_h <= max_h and widest <= max_w:
                 return font, lines, sw
 
-        # Fallback: keep the smallest font and wrap the text safely
+        # Fallback
         font = self._load_font(6, style=style)
         sw = self._stroke_width_for(6)
         return font, lines, sw
