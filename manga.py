@@ -4983,7 +4983,14 @@ tone باید کوتاه و توصیفی باشه؛ مثل:
             cand = (getattr(self, "font_by_style", None) or {}).get(style) or path
             if cand and os.path.isfile(cand):
                 path = cand
-        return ImageFont.truetype(path, size, layout_engine=ImageFont.Layout.BASIC)
+        try:
+    return ImageFont.truetype(
+        path, size, layout_engine=ImageFont.Layout.RAQM
+    )
+except (AttributeError, ValueError, OSError):
+    return ImageFont.truetype(
+        path, size, layout_engine=ImageFont.Layout.BASIC
+    )
 
     @staticmethod
     def _stroke_width_for(size: int) -> int:
