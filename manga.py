@@ -4977,13 +4977,14 @@ tone باید کوتاه و توصیفی باشه؛ مثل:
         return get_display(reshaped)
 
     def _load_font(self, size: int, style: str = "") -> ImageFont.FreeTypeFont:
-        
         path = self.font_path
+
         if style:
             cand = (getattr(self, "font_by_style", None) or {}).get(style) or path
             if cand and os.path.isfile(cand):
                 path = cand
-       try:
+
+        try:
             return ImageFont.truetype(
                 path, size, layout_engine=ImageFont.Layout.RAQM
             )
