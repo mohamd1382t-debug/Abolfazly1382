@@ -5091,11 +5091,17 @@ tone باید کوتاه و توصیفی باشه؛ مثل:
         smallest_attempt = None
         
         for line_gap in (4, 2, 1, 0):
-            for size in range(max_size, min_size - 1, -1):
-                font, lines, sw, total_h, widest, line_h = wrap_at(size, line_gap)
-                smallest_attempt = (font, lines, sw, line_h)
-                if total_h <= max_h and widest <= max_w:
-                    return font, lines, sw
+            for size in range(min_size - 1, 5, -1):
+            font, lines, sw, total_h, widest, line_h = wrap_at(size, 0)
+            smallest_attempt = (font, lines, sw, line_h)
+
+            if total_h <= max_h and widest <= max_w:
+                return font, lines, sw
+
+        # Fallback: keep the smallest font and wrap the text safely
+        font = self._load_font(6, style=style)
+        sw = self._stroke_width_for(6)
+        return font, lines, sw
 
         
         for size in range(min_size - 1, 5, -1):
