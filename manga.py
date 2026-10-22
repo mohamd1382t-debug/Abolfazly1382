@@ -4973,6 +4973,9 @@ tone باید کوتاه و توصیفی باشه؛ مثل:
 
     @staticmethod
     def _shape_farsi(text: str) -> str:
+        text = text.replace("~", "～")
+        text = text.replace(">", "＞")
+        text = text.replace("<", "＜")
         reshaped = arabic_reshaper.reshape(text)
         return get_display(reshaped)
 
